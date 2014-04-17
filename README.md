@@ -1,25 +1,11 @@
 Thaumcraft 4.1 Research Helper
 ==========
 
-[Link](http://ythri.github.io/tcresearch/)
+[Link](http://crafteverywhere.github.io/tcresearch/)
 
-This script helps you with your Thaumcraft 4.1 research. If you have a research note with two aspects that you don't 
-know how to connect, simply choose them in the dropdown list above (From: and To:). Additionally, choose the minimum 
-number of steps between those two aspects. If in your research note, the two aspects have two blank spaces between 
-them, choose the value 2 for Min. Steps. Then click Find Connection and the script will search for the shortest path 
-(well, with at least the minimum length) that connects the two aspects. Note that sometimes the length of any path is 
-longer then the given minimum, but this should not be a problem for your research note.
+本脚本为神秘时代4.1研究的辅助工具。当研究笔记里中出现两种不知道连接方法的要素时,你可以在本页面的下拉菜单(从: 和 到:)中分别选定它们，再选好最少步数，然后点击搜寻链接方式按钮，本工具就能自动搜索出使用以指定的最小步数链接这两种要素的最佳方式。注意有时候使用的步数会超过给定步数，但这一般不会是你研究笔记的问题。
 
-If your are unhappy with the path you got, because you do not have access to those aspects yet or they are quite rare, 
-simply disable those aspects from Available Aspects:. The script will then try to find paths without these. Note that 
-this may cause the path to grow longer. If too many aspects are disabled and there are no paths left without any of 
-those, the script will try to find the shortest path using the minimal number of disabled aspects.
+若不满意获得的路径（因为其中包含了稀有或者当前你缺乏的要素）,你可以在可用要素的区域禁用它们,这样本工具就会试图搜寻不使用它们的最佳链接方式。但注意这可能会让步数变得更长。如果由于太多要素被禁用导致无法不使用它们得到链接，该工具就会尝试使用最少被禁用要素的链接方式。
 
-News
-----
-
-March 13: Holidays, yay. If anything changes during the next weeks while I'm gone, for example Azanor updates to 
-Thaumcraft 4.1.0h or 4.2 (you never know), feel free to fork this repository, add the changes, and post your fixed 
-version on the ftb forums/reddit/etc. The combinations should be really easy to change (its just a JSON object), 
-as should be adding or removing aspects (all of this only requires changes to the three variables `combinations`, 
-`translate`, and `aspects`). See you soon.
+说明：
+本工具为ythri编写，此处仅为汉化版本。
