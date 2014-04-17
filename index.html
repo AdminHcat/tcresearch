@@ -1,79 +1,203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Thaumcraft 4.1 Research Helper</title>
+		<script type="text/javascript" src="buckets-minified.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="jquery.ddslick.min.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+		<script>
+			graph = {};
+			function connect(aspect1, aspect2) {
+				function addConnection(from, to) {
+					if (!(from in graph)) graph[from] = [];
+					graph[from].push(to);
+				}
+				addConnection(aspect1, aspect2);
+				addConnection(aspect2, aspect1);
+			}
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Tcresearch : Thaumcraft 4.1 Research Helper" />
+			function output(path) {
+				var output = [];
+				path.forEach(function(e) {
+					output.push(translate[e] + " (" + e + ")");
+				});
+				return output.join(" -> ");
+			}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+			function find(from, to, steps) {
+				function search(queue, to, visited) {
+					while (!queue.isEmpty()) {
+						var element = queue.dequeue();
+						//alert("path: " + element.path + "\nqueue: " + debug(queue));
+						var node = element.path.pop();
+						if (!(node in visited) || visited[node].indexOf(element.path.length) < 0) {
+							element.path.push(node);
+							if (node == to && element.path.length > steps + 1) return element.path;
+							graph[node].forEach(function(entry) {
+								var newpath = element.path.slice();
+								newpath.push(entry);
+								queue.enqueue({"path":newpath,"length":element.length+getWeight(entry)});
+							});
+							if (!(node in visited)) visited[node] = [];
+							visited[node].push(element.path.length-1);
+						}
+					}
+					return null;
+				}
 
-    <title>Tcresearch</title>
-  </head>
+				var queue = new buckets.PriorityQueue(function(a,b) {
+					return b.length-a.length;
+				});
+				queue.enqueue({"path":[from],"length":0});
+				visited = {};
+				//alert("visited: " + visited + "\nqueue: " + debug(queue));
+				return search(queue, to, visited);
+			}
 
-  <body>
+			combinations = { "void": ["air", "entropy"], "light": ["air", "fire"], "energy": ["order", "fire"], "motion": ["air", "water"], "stone": ["earth", "earth"], "life": ["water", "earth"], "weather": ["air", "ice"], "ice": ["water", "order"], "crystal": ["stone", "water"], "death": ["life", "entropy"], "flight": ["air", "motion"], "darkness": ["void", "light"], "soul": ["life", "death"], "heal": ["life", "life"], "travel": ["motion", "earth"], "poison": ["water", "death"], "eldritch": ["void", "darkness"], "magic": ["void", "energy"], "aura": ["magic", "air"], "taint": ["magic", "entropy"], "seed": ["life", "order"], "slime": ["life", "water"], "plant": ["seed", "earth"], "tree": ["air", "plant"], "beast": ["motion", "life"], "flesh": ["death", "beast"], "undead": ["motion", "death"], "mind": ["earth", "soul"], "senses": ["air", "soul"], "man": ["beast", "mind"], "crop": ["plant", "man"], "harvest": ["crop", "tool"], "metal": ["stone", "order"], "mine": ["man", "stone"], "tool": ["man", "order"], "weapon": ["tool", "entropy"], "armor": ["tool", "earth"], "hunger": ["life", "void"], "greed": ["man", "hunger"], "craft": ["man", "tool"], "cloth": ["tool", "beast"], "mechanism": ["motion", "tool"], "trap": ["motion", "entropy"], "exchange": ["motion", "water"], "wrath": ["weapon", "fire"], "nether": ["fire", "magic"], "gluttony": ["hunger", "hunger"], "envy": ["senses", "hunger"], "sloth": ["trap", "soul"], "pride": ["flight", "void"], "lust": ["flesh", "hunger"], "time": ["void", "order"] };
+			translate = { "air": "aer", "earth": "terra", "fire": "ignis", "water": "aqua", "order": "ordo", "entropy": "perditio", "void": "vacuos", "light": "lux", "energy": "potentia", "motion": "motus", "stone": "saxum", "life": "victus", "weather": "tempestas", "ice": "gelum", "crystal": "vitreus", "death": "mortuus", "flight": "volatus", "darkness": "tenebrae", "soul": "spiritus", "heal": "sano", "travel": "iter", "poison": "venenum", "eldritch": "alienis", "magic": "praecantatio", "aura": "auram", "taint": "vitium", "seed": "granum", "slime": "limus", "plant": "herba", "tree": "arbor", "beast": "bestia", "flesh": "corpus", "undead": "exanimis", "mind": "cognitio", "senses": "sensus", "man": "humanus", "crop": "messis", "harvest": "meto", "metal": "metallum", "mine": "perfodio", "tool": "instrumentum", "weapon": "telum", "armor": "tutamen", "hunger": "fames", "greed": "lucrum", "craft": "fabrico", "cloth": "pannus", "mechanism": "machina", "trap": "vinculum", "exchange": "permutatio", "wrath": "ira", "nether": "infernus", "gluttony": "gula", "envy": "invidia", "sloth": "desidia", "pride": "superbia", "lust": "luxuria", "time": "tempus" };
+			aspects = [ "air", "earth", "fire", "water", "order", "entropy", "void", "light", "energy", "motion", "stone", "life", "weather", "ice", "crystal", "death", "flight", "darkness", "soul", "heal", "travel", "poison", "eldritch", "magic", "aura", "taint", "seed", "slime", "plant", "tree", "beast", "flesh", "undead", "mind", "senses", "man", "crop", "harvest", "metal", "mine", "tool", "weapon", "armor", "hunger", "greed", "craft", "cloth", "mechanism", "trap", "exchange", "wrath", "nether", "gluttony", "envy", "sloth", "pride", "lust", "time" ].sort(function(a,b){
+				return (a == b) ? 0 : (translate[a]<translate[b]) ? -1 : 1;
+			});
+			fm = [ "wrath", "nether", "gluttony", "envy", "sloth", "pride", "lust" ]
+			mb = [ "time" ];
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/crafteverywhere/tcresearch">View on GitHub</a>
+			for (compound in combinations) {
+				connect(compound, combinations[compound][0]);
+				connect(compound, combinations[compound][1]);
+			}
 
-          <h1 id="project_title">Tcresearch</h1>
-          <h2 id="project_tagline">Thaumcraft 4.1 Research Helper</h2>
+			function toggle(obj) {
+				$(obj).find("img").attr("src", function(i,orig){ return (orig.indexOf("color") < 0) ? orig.replace(/mono/, "color") : orig.replace(/color/, "mono"); });
+				$(obj).toggleClass("unavail");
+			}
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/crafteverywhere/tcresearch/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/crafteverywhere/tcresearch/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+			window.onload = function() {
+				function option(value, text) {
+					var option = document.createElement("option");
+					option.value = value;
+					option.textContent = text;
+					return option;
+				}
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+				fromSel = document.getElementById("fromSel");
+				toSel = document.getElementById("toSel");
+				//stepSel = document.getElementById("steps");
+				check = document.getElementById("available");
+				var i = 0;
+				aspects.forEach(function(aspect) {
+					if (fm.indexOf(aspect) < 0 && mb.indexOf(aspect) < 0) {
+						$('#avail').append('<li><a onclick="toggle(this)" id="check' + aspect + '"><img src="aspects/color/' + translate[aspect] + '.png" /><div>' + translate[aspect] + '</div><div class="desc">' + aspect + '</div></a></li>');
+					} else {
+						$('#avail').append('<li><a onclick="toggle(this)" id="check' + aspect + '" class="unavail"><img src="aspects/mono/' + translate[aspect] + '.png" /><div>' + translate[aspect] + '</div><div class="desc">' + aspect + '</div></a></li>');
+					}
+				});
+				//$('#available').buttonset();
+				// for (var i=0; i<11; i++) {
+				// 	stepSel.appendChild(option(i, "" + i));
+				// }
+				var ddData = [];
+				aspects.forEach(function(aspect) {
+					ddData.push({text: translate[aspect], value: aspect, description: "(" + aspect + ")", imageSrc: "aspects/color/" + translate[aspect] + ".png"});
+				});
+				$('#fromSel').ddslick({
+					data: ddData,
+					defaultSelectedIndex: 0,
+					height: 300,
+					width: 170
+				});
+				$('#toSel').ddslick({
+					data: ddData,
+					defaultSelectedIndex: 0,
+					height: 300,
+					width: 170
+				});
+				steps = $("#spinner").spinner({
+					min: 0,
+					max: 10
+				});
+				$("#result").dialog({
+					autoOpen: false,
+					modal: false,
+					width: 200
+				});
+				$('#fm').click(function() {
+					if (this.checked) {
+						fm.forEach(function(e){
+							var obj = $('#check'+e);
+							obj.find("img").attr("src", function(i,orig){ return orig.replace(/mono/, "color"); });
+							obj.removeClass("unavail");
+						});
+					} else {
+						fm.forEach(function(e){
+							var obj = $('#check'+e);
+							obj.find("img").attr("src", function(i,orig){ return orig.replace(/color/, "mono"); });
+							obj.addClass("unavail");
+						});
+					}
+				});
+				$('#mb').click(function() {
+					if (this.checked) {
+						mb.forEach(function(e){
+							var obj = $('#check'+e);
+							obj.find("img").attr("src", function(i,orig){ return orig.replace(/mono/, "color"); });
+							obj.removeClass("unavail");
+						});
+					} else {
+						mb.forEach(function(e){
+							var obj = $('#check'+e);
+							obj.find("img").attr("src", function(i,orig){ return orig.replace(/color/, "mono"); });
+							obj.addClass("unavail");
+						});
+					}
+				});
+			};
+			function run() {
+				var path = find($('#fromSel').data('ddslick').selectedData.value, $('#toSel').data('ddslick').selectedData.value, steps.spinner("value"));
+				$('#result').empty();
+				path.forEach(function(e) {
+					$('#result').append('<li><img src="aspects/color/' + translate[e] + '.png" /><div>' + translate[e] + '</div><div class="desc">' + e + '</div></li><li>↓</li>');
+				});
+				$('#result').children().last().remove();
+				$('#result').dialog("open");
+			}
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+			function getWeight(aspect) {
+				var el = $("#check" + aspect);
+				return (el.hasClass("unavail")) ? 100 : 1;
+			}
+		</script>
+		<style>
+			.aspectlist { list-style:none; padding:0; overflow:scroll; height:300px; display:block; width:650px; }
+			.aspectlist > li { display:block; width:145px; float:left; font-size:100%; font-family:serif; }
+			#avail > li > * { padding:5px; display:block; overflow:hidden; text-decoration:none; color:#333; cursor:pointer; }
+			#avail > li > a:hover { background:#f3f3f3; color:#000; font-weight:bold; }
+			.aspectlist > li img { vertical-align:middle; float:left; margin-right:5px; max-width:64px; }
+			.aspectlist .desc { color:#aaa; overflow: hidden; font-weight:normal; line-height: 1.4em; font-size:small; }
+			.aspectlist > li > div { text-align:left; }
+			#avail > li > a.unavail { background:#f3f3f3; color:#999; }
+			#avail > li > a.unavail:hover { background:#e8e8e8; }
+			#result > li { padding-bottom:10px; text-align:center; }
+		</style>
+	</head>
+	<body>
+		<h2>Thaumcraft 4.1 Research Helper</h2>
+		<ul id="result" class="aspectlist" title="Result"></ul>
+		<table>
+			<tr><td>Addons:</td><td><input type="checkbox" id="fm" /> Forbidden Magic <input type="checkbox" id="mb" /> Magic Bees</td></tr> 
+			<tr><td>Available<br/>Aspects:</td><td><ul id="avail" class="aspectlist"></ul></td></tr>
+			<tr><td>From:</td><td><div id="fromSel"></div></td></tr>
+			<tr><td>To:</td><td><div id="toSel"></div></td></tr>
+			<tr><td>Min. Steps:</td><td><input id="spinner" name="value" value="0" style="width:140px" /><!-- <select id="steps"></select> --></td></tr>
+			<tr><td></td><td><a href="javascript: run();">Find Connection</a></td></tr>
+		</table>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Tcresearch maintained by <a href="https://github.com/crafteverywhere">crafteverywhere</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+		<h3 style="margin-top:100px">Help</h3>
+		<p>This script helps you with your Thaumcraft 4.1 research. If you have a research note with two aspects that you don't know how to connect, simply choose them in the dropdown list above (<strong>From:</strong> and <strong>To:</strong>). Additionally, choose the minimum number of steps between those two aspects. If in your research note, the two aspects have two blank spaces between them, choose the value 2 for <strong>Min. Steps</strong>. Then click <strong>Find Connection</strong> and the script will search for the shortest path (well, with at least the minimum length) that connects the two aspects. Note that sometimes the length of any path is longer then the given minimum, but this should not be a problem for your research note.</p>
+		<p>If your are unhappy with the path you got, because you do not have access to those aspects yet or they are quite rare, simply disable those aspects from <strong>Available Aspects:</strong>. The script will then try to find paths without these. Note that this may cause the path to grow longer. If too many aspects are disabled and there are no paths left without any of those, the script will try to find the shortest path using the minimal number of disabled aspects.</p>
+		<p style="size:small;color:#666;margin-top:50px;">This work is licensed under a <a href="http://creativecommons.org/licenses/by/4.0/" style="color:#55a;">Creative Commons Attribution 4.0 License</a>. Sources can be found in the <a href="https://github.com/ythri/tcresearch/tree/gh-pages" style="color:#55a;">github repository</a>.</p>
+	</body>
 </html>
