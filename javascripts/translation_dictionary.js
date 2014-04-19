@@ -46,7 +46,7 @@ var translate = {
 	"贪婪": "lucrum",
 	"工艺": "fabrico",
 	"布匹": "pannus",
-	"金属": "machina",
+	"机械": "machina",
 	"陷阱": "vinculum",
 	"交换": "permutatio",
 	"暴怒": "ira",
