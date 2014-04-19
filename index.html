@@ -1,218 +1,42 @@
 <!doctype html>
 <html>
-        <head>
-                <meta charset="UTF-8">
-                <title>神秘时代4.1 研究辅助工具</title>
-                <script type="text/javascript" src="buckets-minified.js"></script>
-                <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-                <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-                <script type="text/javascript" src="jquery.ddslick.min.js"></script>
-                <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-                <script>
-                        graph = {};
-                        function connect(aspect1, aspect2) {
-                                function addConnection(from, to) {
-                                        if (!(from in graph)) graph[from] = [];
-                                        graph[from].push(to);
-                                }
-                                addConnection(aspect1, aspect2);
-                                addConnection(aspect2, aspect1);
-                        }
+<head>
+        <meta charset="UTF-8">
+        <title>Thaumcraft 4.1 Research Helper</title>
+        <script type="text/javascript" src="buckets-minified.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="jquery.ddslick.min.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+        <script type="text/javascript" src="javascripts/translation_dictionary.js"></script>
+        <script type="text/javascript" src="javascripts/version_dictionary.js"></script>
+        <script type="text/javascript" src="javascripts/addon_dictionary.js"></script>
+        <script type="text/javascript" src="javascripts/tcresearch.js"></script>
+        <link rel="stylesheet" href="tcresearch.css">
+</head>
+<body>
+        <h2>Thaumcraft 4.1 Research Helper</h2>
+        <div id="combination_box"><div id="left"></div><span class="operator">+</span><div id="right"></div><span class="operator">=</span><div id="equals"></div></div>
+        <table>
+                <tr>
+                        <td>Version:</td>
+                        <td>
+                                <select id="version">
+                                </select>
+                        </td>
+                </tr>
+                <tr><td>From:</td><td><div id="fromSel"></div></td></tr>
+                <tr><td>To:</td><td><div id="toSel"></div></td></tr>
+                <tr><td>Min. Steps:</td><td><input id="spinner" name="value" value="1" style="width:140px" /></td></tr>
+                <tr><td></td><td><input id="find_connection" type="button" value="Find Connection" /><input id="close_results" type="button" value="Close all results" /></td></tr>
+                <tr><td>Addons:</td><td id="addons"></td></tr> 
+                <tr><td>Available<br/>Aspects:</td><td><input type="button" id="sel_all" value="Select All Aspects"><input type="button" id="desel_all" value="Deselect All Aspects"><ul id="avail" class="aspectlist"></ul></td></tr>
+        </table>
 
-                        function output(path) {
-                                var output = [];
-                                path.forEach(function(e) {
-                                        output.push(translate[e] + " (" + e + ")");
-                                });
-                                return output.join(" -> ");
-                        }
-
-                        function find(from, to, steps) {
-                                function search(queue, to, visited) {
-                                        while (!queue.isEmpty()) {
-                                                var element = queue.dequeue();
-                                                //alert("path: " + element.path + "\nqueue: " + debug(queue));
-                                                var node = element.path.pop();
-                                                if (!(node in visited) || visited[node].indexOf(element.path.length) < 0) {
-                                                        element.path.push(node);
-                                                        if (node == to && element.path.length > steps + 1) return element.path;
-                                                        graph[node].forEach(function(entry) {
-                                                                var newpath = element.path.slice();
-                                                                newpath.push(entry);
-                                                                queue.enqueue({"path":newpath,"length":element.length+getWeight(entry)});
-                                                        });
-                                                        if (!(node in visited)) visited[node] = [];
-                                                        visited[node].push(element.path.length-1);
-                                                }
-                                        }
-                                        return null;
-                                }
-
-                                var queue = new buckets.PriorityQueue(function(a,b) {
-                                        return b.length-a.length;
-                                });
-                                queue.enqueue({"path":[from],"length":0});
-                                visited = {};
-                                //alert("visited: " + visited + "\nqueue: " + debug(queue));
-                                return search(queue, to, visited);
-                        }
-
-                        combinations = { "虚空": ["风", "混沌"], "光明": ["风", "火"], "能量": ["秩序", "火"], "运动": ["风", "水"], "石头": ["地", "地"], "生命": ["水", "地"], "气候": ["风", "冰霜"], "冰霜": ["水", "秩序"], "水晶": ["石头", "水"], "死亡": ["生命", "混沌"], "飞行": ["风", "运动"], "黑暗": ["虚空", "光明"], "灵魂": ["生命", "死亡"], "痊愈": ["生命", "生命"], "旅行": ["运动", "地"], "剧毒": ["水", "死亡"], "异域": ["虚空", "黑暗"], "魔法": ["虚空", "能量"], "灵气": ["魔法", "风"], "腐化": ["魔法", "混沌"], "种子": ["生命", "秩序"], "粘液": ["生命", "水"], "植物": ["种子", "地"], "树木": ["风", "植物"], "野兽": ["运动", "生命"], "血肉": ["死亡", "野兽"], "亡灵": ["运动", "死亡"], "心智": ["地", "灵魂"], "意识": ["风", "灵魂"], "人类": ["野兽", "心智"], "作物": ["植物", "人类"], "收获": ["作物", "工具"], "金属": ["石头", "秩序"], "采掘": ["人类", "石头"], "工具": ["人类", "秩序"], "武器": ["工具", "混沌"], "护甲": ["工具", "地"], "饥饿": ["生命", "虚空"], "贪婪": ["人类", "饥饿"], "工艺": ["人类", "工具"], "布匹": ["工具", "野兽"], "机械": ["运动", "工具"], "陷阱": ["运动", "混沌"], "交换": ["运动", "水"], "暴怒": ["武器", "火"], "下界": ["火", "魔法"], "饕餮": ["饥饿", "饥饿"], "妒忌": ["意识", "饥饿"], "怠惰": ["陷阱", "灵魂"], "傲慢": ["飞行", "虚空"], "欲望": ["血肉", "饥饿"], "时间": ["虚空", "秩序"] };
-                        newcombinations = { "虚空": ["风", "混沌"], "光明": ["风", "火"], "能量": ["秩序", "火"], "运动": ["风", "秩序"], "石头": ["地", "地"], "生命": ["水", "地"], "气候": ["风", "水"], "冰霜": ["水", "秩序"], "水晶": ["石头", "水"], "死亡": ["生命", "混沌"], "飞行": ["风", "运动"], "黑暗": ["虚空", "光明"], "灵魂": ["生命", "死亡"], "痊愈": ["生命", "生命"], "旅行": ["运动", "地"], "剧毒": ["水", "死亡"], "异域": ["虚空", "黑暗"], "魔法": ["虚空", "能量"], "灵气": ["魔法", "风"], "腐化": ["魔法", "混沌"], "种子": ["生命", "土地"], "粘液": ["生命", "水"], "植物": ["种子", "地"], "树木": ["地", "植物"], "野兽": ["运动", "生命"], "血肉": ["死亡", "野兽"], "亡灵": ["运动", "死亡"], "心智": ["地", "灵魂"], "意识": ["风", "灵魂"], "人类": ["野兽", "心智"], "作物": ["种子", "人类"], "收获": ["作物", "人类"], "金属": ["石头", "秩序"], "采掘": ["人类", "石头"], "工具": ["人类", "秩序"], "武器": ["工具", "混沌"], "护甲": ["工具", "地"], "饥饿": ["生命", "虚空"], "贪婪": ["人类", "饥饿"], "工艺": ["人类", "工具"], "布匹": ["工具", "野兽"], "机械": ["运动", "工具"], "陷阱": ["运动", "混沌"], "交换": ["运动", "水"], "暴怒": ["武器", "火"], "下界": ["火", "魔法"], "饕餮": ["饥饿", "饥饿"], "妒忌": ["意识", "饥饿"], "怠惰": ["陷阱", "灵魂"], "傲慢": ["飞行", "虚空"], "欲望": ["血肉", "饥饿"], "时间": ["虚空", "秩序"] };
-                        translate = { "风": "aer", "地": "terra", "火": "ignis", "水": "aqua", "秩序": "ordo", "混沌": "perditio", "虚空": "vacuos", "光明": "lux", "能量": "potentia", "运动": "motus", "石头": "saxum", "生命": "victus", "气候": "tempestas", "冰霜": "gelum", "水晶": "vitreus", "死亡": "mortuus", "飞行": "volatus", "黑暗": "tenebrae", "灵魂": "spiritus", "痊愈": "sano", "旅行": "iter", "剧毒": "venenum", "异域": "alienis", "魔法": "praecantatio", "灵气": "auram", "腐化": "vitium", "种子": "granum", "粘液": "limus", "植物": "herba", "树木": "arbor", "野兽": "bestia", "血肉": "corpus", "亡灵": "exanimis", "心智": "cognitio", "意识": "sensus", "人类": "humanus", "作物": "messis", "收获": "meto", "金属": "metallum", "采掘": "perfodio", "工具": "instrumentum", "武器": "telum", "护甲": "tutamen", "饥饿": "fames", "贪婪": "lucrum", "工艺": "fabrico", "布匹": "pannus", "机械": "machina", "陷阱": "vinculum", "交换": "permutatio", "暴怒": "ira", "下界": "infernus", "饕餮": "gula", "妒忌": "invidia", "怠惰": "desidia", "傲慢": "superbia", "欲望": "luxuria", "时间": "tempus" };
-                        aspects = [ "风", "地", "火", "水", "秩序", "混沌", "虚空", "光明", "能量", "运动", "石头", "生命", "气候", "冰霜", "水晶", "死亡", "飞行", "黑暗", "灵魂", "痊愈", "旅行", "剧毒", "异域", "魔法", "灵气", "腐化", "种子", "粘液", "植物", "树木", "野兽", "血肉", "亡灵", "心智", "意识", "人类", "作物", "收获", "金属", "采掘", "工具", "武器", "护甲", "饥饿", "贪婪", "工艺", "布匹", "机械", "陷阱", "交换", "暴怒", "下界", "饕餮", "妒忌", "怠惰", "傲慢", "欲望", "时间" ].sort(function(a,b){
-                                return (a == b) ? 0 : (translate[a]<translate[b]) ? -1 : 1;
-                        });
-                        fm = [ "暴怒", "下界", "饕餮", "妒忌", "怠惰", "傲慢", "欲望" ]
-                        mb = [ "时间" ];
-
-						for (compound in combinations) {
-                                connect(compound, combinations[compound][0]);
-                                connect(compound, combinations[compound][1]);
-                            }
-						
-                        /*if(document.getElementById("gz") == true){
-                             for (compound in newcombinations) {
-                                connect(compound, newcombinations[compound][0]);
-                                connect(compound, newcombinations[compound][1]);
-                              }
-                        }else{
-                             for (compound in combinations) {
-                                connect(compound, combinations[compound][0]);
-                                connect(compound, combinations[compound][1]);
-                        }
-                        }*/
-
-                        function toggle(obj) {
-                                $(obj).find("img").attr("src", function(i,orig){ return (orig.indexOf("color") < 0) ? orig.replace(/mono/, "color") : orig.replace(/color/, "mono"); });
-                                $(obj).toggleClass("unavail");
-                        }
-
-                        window.onload = function() {
-                                function option(value, text) {
-                                        var option = document.createElement("option");
-                                        option.value = value;
-                                        option.textContent = text;
-                                        return option;
-                                }
-
-                                fromSel = document.getElementById("fromSel");
-                                toSel = document.getElementById("toSel");
-                                //stepSel = document.getElementById("steps");
-                                check = document.getElementById("available");
-                                var i = 0;
-                                aspects.forEach(function(aspect) {
-                                        if (fm.indexOf(aspect) < 0 && mb.indexOf(aspect) < 0) {
-                                                $('#avail').append('<li><a onclick="toggle(this)" id="check' + aspect + '"><img src="aspects/color/' + translate[aspect] + '.png" /><div>' + translate[aspect] + '</div><div class="desc">' + aspect + '</div></a></li>');
-                                        } else {
-                                                $('#avail').append('<li><a onclick="toggle(this)" id="check' + aspect + '" class="unavail"><img src="aspects/mono/' + translate[aspect] + '.png" /><div>' + translate[aspect] + '</div><div class="desc">' + aspect + '</div></a></li>');
-                                        }
-                                });
-                                //$('#available').buttonset();
-                                // for (var i=0; i<11; i++) {
-                                //         stepSel.appendChild(option(i, "" + i));
-                                // }
-                                var ddData = [];
-                                aspects.forEach(function(aspect) {
-                                        ddData.push({text: translate[aspect], value: aspect, description: "(" + aspect + ")", imageSrc: "aspects/color/" + translate[aspect] + ".png"});
-                                });
-                                $('#fromSel').ddslick({
-                                        data: ddData,
-                                        defaultSelectedIndex: 0,
-                                        height: 300,
-                                        width: 170
-                                });
-                                $('#toSel').ddslick({
-                                        data: ddData,
-                                        defaultSelectedIndex: 0,
-                                        height: 300,
-                                        width: 170
-                                });
-                                steps = $("#spinner").spinner({
-                                        min: 0,
-                                        max: 10
-                                });
-                                $("#result").dialog({
-                                        autoOpen: false,
-                                        modal: false,
-                                        width: 220
-                                });
-                                $('#fm').click(function() {
-                                        if (this.checked) {
-                                                fm.forEach(function(e){
-                                                        var obj = $('#check'+e);
-                                                        obj.find("img").attr("src", function(i,orig){ return orig.replace(/mono/, "color"); });
-                                                        obj.removeClass("unavail");
-                                                });
-                                        } else {
-                                                fm.forEach(function(e){
-                                                        var obj = $('#check'+e);
-                                                        obj.find("img").attr("src", function(i,orig){ return orig.replace(/color/, "mono"); });
-                                                        obj.addClass("unavail");
-                                                });
-                                        }
-                                });
-                                $('#mb').click(function() {
-                                        if (this.checked) {
-                                                mb.forEach(function(e){
-                                                        var obj = $('#check'+e);
-                                                        obj.find("img").attr("src", function(i,orig){ return orig.replace(/mono/, "color"); });
-                                                        obj.removeClass("unavail");
-                                                });
-                                        } else {
-                                                mb.forEach(function(e){
-                                                        var obj = $('#check'+e);
-                                                        obj.find("img").attr("src", function(i,orig){ return orig.replace(/color/, "mono"); });
-                                                        obj.addClass("unavail");
-                                                });
-                                        }
-                                });
-                        };
-                        function run() {
-                                var path = find($('#fromSel').data('ddslick').selectedData.value, $('#toSel').data('ddslick').selectedData.value, steps.spinner("value"));
-                                $('#result').empty();
-                                path.forEach(function(e) {
-                                        $('#result').append('<li><img src="aspects/color/' + translate[e] + '.png" /><div>' + translate[e] + '</div><div class="desc">' + e + '</div></li><li>↓</li>');
-                                });
-                                $('#result').children().last().remove();
-                                $('#result').dialog("open");
-                        }
-
-                        function getWeight(aspect) {
-                                var el = $("#check" + aspect);
-                                return (el.hasClass("unavail")) ? 100 : 1;
-                        }
-                </script>
-                <style>
-                        .aspectlist { list-style:none; padding:0; overflow:scroll; height:300px; display:block; width:700px; }
-                        .aspectlist > li { display:block; width:160px; float:left; font-size:100%; font-family:serif; }
-                        #avail > li > * { padding:5px; display:block; overflow:hidden; text-decoration:none; color:#333; cursor:pointer; }
-                        #avail > li > a:hover { background:#f3f3f3; color:#000; font-weight:bold; }
-                        .aspectlist > li img { vertical-align:middle; float:left; margin-right:5px; max-width:80px; }
-                        .aspectlist .desc { color:#aaa; overflow: hidden; font-weight:normal; line-height: 1.4em; font-size:small; }
-                        .aspectlist > li > div { text-align:left; }
-                        #avail > li > a.unavail { background:#f3f3f3; color:#999; }
-                        #avail > li > a.unavail:hover { background:#e8e8e8; }
-                        #result > li { padding-bottom:10px; text-align:center; }
-                </style>
-        </head>
-        <body>
-                <h2>神秘时代4.1 研究辅助工具</h2>
-                <ul id="result" class="aspectlist" title="Result"></ul>
-                <table>
-                        <tr><td>拓展:</td><td><input type="checkbox" id="fm" /> 禁忌魔法 <input type="checkbox" id="mb" /> 魔法蜜蜂</td></tr> 
-                        <tr><td>要素组合规则版本:</td><td><input type="checkbox" id="gz" /> 4.1.1.9之前的规则 </td></tr> 
-                        <tr><td>可用<br/>要素:</td><td><ul id="avail" class="aspectlist"></ul></td></tr>
-                        <tr><td>从:</td><td><div id="fromSel"></div></td></tr>
-                        <tr><td>到:</td><td><div id="toSel"></div></td></tr>
-                        <tr><td>最小步数:</td><td><input id="spinner" name="value" value="0" style="width:140px" /><!-- <select id="steps"></select> --></td></tr>
-                        <tr><td></td><td><a href="javascript: run();">搜寻链接方式</a></td></tr>
-                </table>
-
-                <h3 style="margin-top:100px">Help</h3>
-                <p>本脚本为神秘时代4.1研究的辅助工具。当研究笔记里中出现两种不知道连接方法的要素时,你可以在本页面的下拉菜单(<strong>从:</strong> 和 <strong>到:</strong>)中分别选定它们，再选好<strong>最少步数</strong>，然后点击<strong>搜寻链接方式</strong>按钮，本工具就能自动搜索出使用以指定的最小步数链接这两种要素的最佳方式。注意有时候使用的步数会超过给定步数，但这一般不会是你研究笔记的问题。</p>
-                <p>若不满意获得的路径（因为其中包含了稀有或者当前你缺乏的要素）,你可以在<strong>可用要素</strong>的区域禁用它们,这样本工具就会试图搜寻不使用它们的最佳链接方式。但注意这可能会让步数变得更长。如果由于太多要素被禁用导致无法不使用它们得到链接，该工具就会尝试使用最少被禁用要素的链接方式。</p>
-                <p>本工具原作者为ythri，汉化版本由crafteverywhere维护，如有问题，可发邮件至craftmanlu@foxmail.com咨询。</p>
-                <p style="size:small;color:#666;margin-top:50px;">本工具基于 <a href="http://creativecommons.org/licenses/by/4.0/" style="color:#55a;">Creative Commons Attribution 4.0 License开源</a>。源码可以在这里查看: <a href="https://github.com/ythri/tcresearch/tree/gh-pages" style="color:#55a;">源码</a>。 汉化版本源码可以在这里查看: <a href="https://github.com/crafteverywhere/tcresearch/tree/gh-pages" style="color:#55a;">汉化版源码</a>.</p>
-        </body>
+        <h3 style="margin-top:100px">Help</h3>
+        <p>本脚本为神秘时代4.1研究的辅助工具。当研究笔记里中出现两种不知道连接方法的要素时,你可以在本页面的下拉菜单(<strong>从:</strong> 和 <strong>到:</strong>)中分别选定它们，再选好<strong>最少步数</strong>，然后点击<strong>搜寻链接方式</strong>按钮，本工具就能自动搜索出使用以指定的最小步数链接这两种要素的最佳方式。注意有时候使用的步数会超过给定步数，但这一般不会是你研究笔记的问题。</p>
+        <p>若不满意获得的路径（因为其中包含了稀有或者当前你缺乏的要素）,你可以在<strong>可用要素</strong>的区域禁用它们,这样本工具就会试图搜寻不使用它们的最佳链接方式。但注意这可能会让步数变得更长。如果由于太多要素被禁用导致无法不使用它们得到链接，该工具就会尝试使用最少被禁用要素的链接方式。</p>
+        <p>本工具原作者为ythri，汉化版本由crafteverywhere维护，如有问题，可发邮件至craftmanlu@foxmail.com咨询。</p>
+        <p style="size:small;color:#666;margin-top:50px;">本工具基于 <a href="http://creativecommons.org/licenses/by/4.0/" style="color:#55a;">Creative Commons Attribution 4.0 License开源</a>。源码可以在这里查看: <a href="https://github.com/ythri/tcresearch/tree/gh-pages" style="color:#55a;">源码</a>。 汉化版本源码可以在这里查看: <a href="https://github.com/crafteverywhere/tcresearch/tree/gh-pages" style="color:#55a;">汉化版源码</a>。</p>
+</body>
 </html>
