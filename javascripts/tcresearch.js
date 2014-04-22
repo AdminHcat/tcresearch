@@ -127,7 +127,7 @@ $(function(){
         });
         $(".aspectlist").on("mouseenter", ".aspect", function() {
                 var aspect = $(this).attr("id");
-                if (aspect!="fire"&&aspect!="water"&&aspect!="order"&&aspect!="air"&&aspect!="entropy"&&aspect!="earth"){
+                if (aspect!="火"&&aspect!="水"&&aspect!="秩序"&&aspect!="风"&&aspect!="混沌"&&aspect!="地"){
                         var combination = combinations[aspect];
                         $("#combination_box #left").html('<img src="aspects/color/' + translate[combination[0]] + '.png" /><div class="name">' + translate[combination[0]] + '</div><div class="desc">' + combination[0] + '</div>');
                         $("#combination_box #right").html('<img src="aspects/color/' + translate[combination[1]] + '.png" /><div class="name">' + translate[combination[1]] + '</div><div class="desc">' + combination[1] + '</div>');
@@ -212,14 +212,14 @@ $(function(){
                         $('#'+id).append('<li class="aspect_result"><img src="aspects/color/' + translate[e] + '.png" /><div>' + translate[e] + '</div><div class="desc">' + e + '</div></li><li>↓</li>');
                 });
                 $('#'+id).children().last().remove();
-                $('#'+id).append('<li id="aspects_used">Aspects Used</li>');
+                $('#'+id).append('<li id="aspects_used">使用要素</li>');
                 var used = '<ul id="aspects_used_list">';
                 $.each(aspect_count, function(aspect, value){
                         if(value>0) {
                                 used = $(used).append('<li title="'+translate[aspect]+': '+value+'" style="background-image:url(\'aspects/color/'+translate[aspect]+'.png\')">'+value+'</li>');
                         }
                 });
-                used = $(used).append("<div>Total Steps: "+ step_count+"</div>");
+                used = $(used).append("<div>步数: "+ step_count+"</div>");
                 used = $(used).append('</ul>');
                 $('#'+id).append(used);
                 $('#'+id).dialog("open");
