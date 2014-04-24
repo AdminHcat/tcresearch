@@ -53,7 +53,7 @@ var translate = {
 	"下界": "infernus",
 	"饕餮": "gula",
 	"妒忌": "invidia",
-	"怠惰": "desidia",
+	"怠倦": "desidia",
 	"傲慢": "superbia",
 	"欲望": "luxuria",
 	"时间": "tempus"
