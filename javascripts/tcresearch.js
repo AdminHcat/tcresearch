@@ -75,6 +75,13 @@ $(function(){
                 option.textContent = text;
                 return option;
         }
+        
+        
+	function formatAspectName(string)
+	{
+		//http://stackoverflow.com/a/1026087 Capitalize the first letter of string in JavaScript
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	}
 
         fromSel = document.getElementById("fromSel");
         toSel = document.getElementById("toSel");
@@ -129,9 +136,9 @@ $(function(){
                 var aspect = $(this).attr("id");
                 if (aspect!="火"&&aspect!="水"&&aspect!="秩序"&&aspect!="风"&&aspect!="混沌"&&aspect!="地"){
                         var combination = combinations[aspect];
-                        $("#combination_box #left").html('<img src="aspects/color/' + translate[combination[0]] + '.png" /><div class="name">' + translate[combination[0]] + '</div><div class="desc">' + combination[0] + '</div>');
-                        $("#combination_box #right").html('<img src="aspects/color/' + translate[combination[1]] + '.png" /><div class="name">' + translate[combination[1]] + '</div><div class="desc">' + combination[1] + '</div>');
-                        $("#combination_box #equals").html('<img src="aspects/color/' + translate[aspect] + '.png" /><div class="name">' + translate[aspect] + '</div><div class="desc">' + aspect + '</div>');
+                        $("#combination_box #left").html('<img src="aspects/color/' + translate[combination[0]] + '.png" /><div class="name">' + formatAspectName(translate[combination[0]]) + '</div><div class="desc">' + combination[0] + '</div>');
+			$("#combination_box #right").html('<img src="aspects/color/' + translate[combination[1]] + '.png" /><div class="name">' + formatAspectName(translate[combination[1]]) + '</div><div class="desc">' + combination[1] + '</div>');
+			$("#combination_box #equals").html('<img src="aspects/color/' + translate[aspect] + '.png" /><div class="name">' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + aspect + '</div>');
                         $(this).mousemove(function(e) {
                                 $("#combination_box").css({left:e.pageX+10, top:e.pageY-100}).show();
                         });
@@ -157,12 +164,12 @@ $(function(){
                 });
                 push_addons(aspects, combinations);
                 aspects.forEach(function(aspect) {
-                        $('#avail').append('<li class="aspect" id="'+aspect+'"><img src="aspects/color/' + translate[aspect] + '.png" /><div>' + translate[aspect] + '</div><div class="desc">' + aspect + '</div></li>');
+                       $('#avail').append('<li class="aspect" id="'+aspect+'"><img src="aspects/color/' + translate[aspect] + '.png" /><div>' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + aspect + '</div></li>');
                 });
                 toggle_addons(addon_aspects);
                 var ddData = [];
                 aspects.forEach(function(aspect) {
-                        ddData.push({text: translate[aspect], value: aspect, description: "(" + aspect + ")", imageSrc: "aspects/color/" + translate[aspect] + ".png"});
+                        ddData.push({text: formatAspectName(translate[aspect]), value: aspect, description: "(" + aspect + ")", imageSrc: "aspects/color/" + translate[aspect] + ".png"});
                 });
                 $('#fromSel').ddslick({
                         data: ddData,
@@ -187,7 +194,7 @@ $(function(){
                 var toSel = $('#toSel').data('ddslick').selectedData.value;
                 var path = find(fromSel, toSel, steps.spinner("value"));
                 var id = fromSel+'to'+toSel;
-                var title = translate[fromSel]+' &rarr; '+translate[toSel];
+                var title = formatAspectName(translate[fromSel])+' &rarr; '+formatAspectName(translate[toSel]);
                 var step_count=0;
                 var aspect_count={};
                 $.each(aspects, function(aspect, value){
@@ -209,7 +216,7 @@ $(function(){
                                 aspect_count[e]++;
                                 step_count++;
                         }
-                        $('#'+id).append('<li class="aspect_result aspect" id="' + e + '"><img src="aspects/color/' + translate[e] + '.png" /><div>' + translate[e] + '</div><div class="desc">' + e + '</div></li><li>↓</li>');
+                        $('#'+id).append('<li class="aspect_result aspect" id="' + e + '"><img src="aspects/color/' + translate[e] + '.png" /><div>' + formatAspectName(translate[e]) + '</div><div class="desc">' + e + '</div></li><li>↓</li>');
                 });
                 $('#'+id).children().last().remove();
                 $('#'+id).append('<li id="aspects_used">使用要素</li>');
