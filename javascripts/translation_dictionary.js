@@ -56,5 +56,10 @@ var translate = {
 	"怠倦": "desidia",
 	"傲慢": "superbia",
 	"欲望": "luxuria",
-	"时间": "tempus"
+	"时间": "tempus",
+	"守护": "exubitor",
+	"柑橘": "citrus",
+	"磁力": "magnes",
+	"波动": "fluctuatio",
+	"启示": "revelatio"
 };
