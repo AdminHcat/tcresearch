@@ -61,5 +61,10 @@ var translate = {
 	"柑橘": "citrus",
 	"磁力": "magnes",
 	"波动": "fluctuatio",
-	"启示": "revelatio"
+	"启示": "revelatio",
+	"电力": "electrum",
+	"磁性": "magneto",
+	"欺诈": "nebrisum",
+	"辐射": "radio",
+	"愚锶": "stronito"
 };
