@@ -18,7 +18,7 @@ var translate = {
 	"飞行": "volatus",
 	"黑暗": "tenebrae",
 	"灵魂": "spiritus",
-	"痊愈": "sano",
+	"治愈": "sano",
 	"旅行": "iter",
 	"剧毒": "venenum",
 	"异域": "alienis",
