@@ -1,3 +1,21 @@
+#title {
+	font-style: italic;
+	font-weight: bold;
+}
+#tool {
+	border-radius: 10px;
+}
+#find_connection {
+	font-size:18pt;
+	width:200px;
+	height:80px;
+	border-radius: 6px;
+	float: right;
+}
+#help {
+	border: 1;
+	border-radius: 6px;
+}
 .aspectlist {
 	list-style:none;
 	padding:0;
@@ -52,7 +70,9 @@
 	background:#e8e8e8;
 }
 #close_results {
-	float:right;
+	float: right;
+	height: 40px;
+	border-radius: 6px;
 }
 .result > li {
 	margin-bottom:10px;
