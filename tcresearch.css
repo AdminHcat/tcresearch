@@ -35,6 +35,12 @@ table {
 a {
 	color: orange;
 }
+.dd-options {
+	z-index: 999;
+} 
+.dd-click-off-close {
+	z-index: 999;
+}
 #preload{
 	width: 0px;
 	height: 0px;
