@@ -52,8 +52,9 @@ a {
 }
 #tool {
 	background-image: url(images/tool.jpg);
+	background-size: 120%;
 	border-radius: 10px;
-	padding: 100px auto;
+	padding: 20px;
 }
 #find_connection {
 	font-size:18pt;
@@ -78,6 +79,7 @@ a {
 	height:300px;
 	display:block;
 	width:650px;
+	z-index: 999;
 }
 .aspectlist > li {
 	display:block;
@@ -149,7 +151,7 @@ a {
 	display:table-cell;
 	padding:5px;
 	display:none;
-	z-index:999;
+	z-index:900;
 }
 #combination_box img {
 	float:left;
