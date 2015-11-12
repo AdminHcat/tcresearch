@@ -14,52 +14,69 @@
         <script type="text/javascript" src="javascripts/tcresearch.js"></script>
         <link rel="stylesheet" href="tcresearch.css">
     </head>
-    <body bgcolor="grey">
-        <h2 id="title">神秘时代研究辅助工具</h2>
-        <div id="combination_box"><div id="left"></div><span class="operator">+</span><div id="right"></div><span class="operator">=</span><div id="equals"></div></div>
-        <table id="tool" bgcolor="lightgrey">
-            <tr>
-                <td>版本</td>
-                <td>
-                <select id="version"></select>
-                </td>
-            </tr>
-            <tr>
-            <td>从：</td>
-            <td><div id="fromSel"></td>
-            <td></td>
-            <td colspan="2" rowspan="2">
-                <input id="find_connection" type="button" value="搜寻链接方式" />
-            </td>
-            </tr>
-            <tr>
-                <td>到：</td>
-                <td><div id="toSel"></td>
-            </tr>
-            <tr>
-                <td>最小<br/>步数</td>
-                <td><input id="spinner" name="value" value="1" style="width:140px" /></td>
-            </tr>
-            <tr>
-                <td>拓展</td>
-                <td id="addons"></td>
-            </tr>
-            <tr>
-                <td>可用<br/>要素</td>
-                <td colspan="3">
-                    <input type="button" id="sel_all" value="选定所有要素">
-                    <input type="button" id="desel_all" value="取消所有要素">
-                <ul id="avail" class="aspectlist"></ul>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><input id="close_results" type="button" value="关闭所有结果"></td>
-            </tr>
-        </table>
-        <p id="help">
+    <body>
+        <div id="preload">
+            <img src="images/gui_research_back_1.jpg" alt="">
+            <img src="images/gui_research_back_2.jpg" alt="">
+            <img src="images/gui_research_back_3.jpg" alt="">
+            <img src="images/gui_research_back_4.jpg" alt="">
+            <img src="images/gui_research_back_5.jpg" alt="">
+        </div>
+        <div id="main">
+            <h2 id="title">神秘时代研究辅助工具</h2>
+            <div id="combination_box">
+                <div id="left"></div>
+                <span class="operator">+</span>
+                <div id="right"></div>
+                <span class="operator">=</span>
+                <div id="equals"></div>
+            </div>
+            <table id="tool" bgcolor="lightgrey">
+                <tr>
+                    <td>版本</td>
+                    <td>
+                        <select id="version"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>从：</td>
+                    <td><div id="fromSel"></td>
+                    <td></td>
+                    <td colspan="2" rowspan="2">
+                        <input id="find_connection" type="button" value="搜寻链接方式" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>到：</td>
+                    <td><div id="toSel"></td>
+                </tr>
+                <tr>
+                    <td>最小<br/>步数</td>
+                    <td>
+                        <input id="spinner" name="value" value="1" style="width:140px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>拓展</td>
+                    <td id="addons"></td>
+                </tr>
+                <tr>
+                    <td>可用<br/>要素</td>
+                    <td colspan="3">
+                        <input type="button" id="sel_all" value="选定所有要素">
+                        <input type="button" id="desel_all" value="取消所有要素">
+                        <ul id="avail" class="aspectlist"></ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><input id="close_results" type="button" value="关闭所有结果"></td>
+                </tr>
+            </table>
+        </div>
+        <div id="help">
             <h3 style="margin-top:20px">使用说明:</h3>
             <p>本工具用于辅助神秘时代中的研究环节.</p>
             <p>当研究笔记中出现两种连接方法不明的要素时,你可以在本页面的下拉菜单(<strong>从:</strong> 和 <strong>到:</strong>)中分别选中它们,再设置好<strong>最少步数</strong>,点击<strong>搜寻链接方式</strong>按钮,本工具就能自动搜索出使用以指定的最小步数链接这两种要素的最佳方式.注意有时使用的步数会超过给定步数（这是因为在给定步数内无法完成连接）.</p>
@@ -73,7 +90,7 @@
             <p>神秘时代的原帖地址请戳<a href="http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1292130-thaumcraft" target="_blank">这里</a>.</p>
             <p>为避免出现版本问题请在作者提供的下载地址下载:<a href="http://www.curse.com/mc-mods/minecraft/223628-thaumcraft" target="_blank">戳这里</a>.</p>
             <p>反馈bug或者获取较新翻译文件请<a href="https://github.com/Azanor/thaumcraft" target="_blank">戳这里</a>.</p>
-        </p>
+        </div>
         <footer>
             <p style="size:small;color:#666;margin-top:50px;">本工具基于 <a href="http://creativecommons.org/licenses/by/4.0/" style="color:#55a;">Creative Commons Attribution 4.0 License</a> 开源.源码可以在这里查看: <a href="https://github.com/ythri/tcresearch/tree/gh-pages" style="color:#55a;">源码</a>. 汉化版本源码可以在这里查看: <a href="https://github.com/crafteverywhere/tcresearch/tree/gh-pages" style="color:#55a;">汉化版源码</a>.</p>
         </footer>

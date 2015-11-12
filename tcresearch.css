@@ -1,9 +1,59 @@
+@keyframes bgchange {
+    0%   { background-image: url(images/gui_research_back_1.jpg); }
+    20%  { background-image: url(images/gui_research_back_2.jpg); }
+    40%  { background-image: url(images/gui_research_back_3.jpg); }
+    60%  { background-image: url(images/gui_research_back_4.jpg); }
+    80% { background-image: url(images/gui_research_back_5.jpg); }
+    100%   { background-image: url(images/gui_research_back_1.jpg); }
+}
+@-webkit-keyframes bgchange {
+    0%   { background-image: url(images/gui_research_back_1.jpg); }
+    20%  { background-image: url(images/gui_research_back_2.jpg); }
+    40%  { background-image: url(images/gui_research_back_3.jpg); }
+    60%  { background-image: url(images/gui_research_back_4.jpg); }
+    80% { background-image: url(images/gui_research_back_5.jpg); }
+    100%   { background-image: url(images/gui_research_back_1.jpg); }
+}
+* {
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-perspective: 1000;
+	-moz-perspective: 1000;
+	-ms-perspective: 1000;
+	perspective: 1000;
+}
+body {
+    -webkit-animation: bgchange 24s linear 4s infinite alternate;
+    animation: bgchange 24s linear 4s infinite alternate
+    background-repeat:no-repeat;
+}
+table {
+	margin:0 auto;
+}
+a {
+	color: orange;
+}
+#preload{
+	width: 0px;
+	height: 0px;
+	display: none;
+	position: absolute;
+}
+#main {
+	position: relative;
+}
 #title {
 	font-style: italic;
 	font-weight: bold;
+	color: grey;
+	text-align: center;
 }
 #tool {
+	background-image: url(images/tool.jpg);
 	border-radius: 10px;
+	padding: 100px auto;
 }
 #find_connection {
 	font-size:18pt;
@@ -13,6 +63,11 @@
 	float: right;
 }
 #help {
+	background-image: url(images/help.jpg);
+	font-size: 16px;
+	color: orange;
+	margin: 40px;
+	padding: 40px;
 	border: 1;
 	border-radius: 6px;
 }
@@ -30,6 +85,9 @@
 	float:left;
 	font-size:100%;
 	font-family:serif;
+}
+#avail {
+	background-color: lightgrey;
 }
 #avail > li > * {
 	padding:5px;
