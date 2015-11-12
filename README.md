@@ -1,4 +1,4 @@
-Thaumcraft 4 Research Helper 神秘时代4研究辅助
+Thaumcraft Research Helper 神秘时代研究辅助
 ==========
 
 [页面地址](http://crafteverywhere.github.io/tcresearch/)
